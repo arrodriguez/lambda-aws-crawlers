@@ -90,7 +90,7 @@ func CrawlersStart(event CrawlerStartEvent) (CrawlerResponseEvent, error) {
 		InstanceType: aws.String(event.ImageType),
 		MinCount:     aws.Int64(1),
 		MaxCount:     aws.Int64(1),
-		InstanceInitiatedShutdownBehavior: aws.String("terminate"),
+		InstanceInitiatedShutdownBehavior: aws.String(ec2.ShutdownBehaviorTerminate),
 		NetworkInterfaces:                 networkElements,
 		BlockDeviceMappings:               blockMapping,
 		TagSpecifications: []*ec2.TagSpecification{

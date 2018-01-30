@@ -49,10 +49,7 @@ func CrawlersStop(event CrawlerStopEvent) error {
 	svc := ec2.New(session.New(config))
 
 	fmt.Println("#####################", "Paso el Block Mapping")
-	// Specify the details of the instance that you want to create.
-	_, err = svc.StopInstances(&ec2.StopInstancesInput{
-		// An Amazon Linux AMI ID for t2.micro instances in the us-west-2 region
-		Force: aws.Bool(true),
+	_, err = svc.TerminateInstances(&ec2.TerminateInstancesInput{
 		InstanceIds: []*string{
 			aws.String(event.InstanceId),
 		},
