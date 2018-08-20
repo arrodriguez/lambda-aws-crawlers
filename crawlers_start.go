@@ -65,7 +65,7 @@ func CrawlersStart(event CrawlerStartEvent) (CrawlerResponseEvent, error) {
 			DeleteOnTermination:      aws.Bool(true),
 			DeviceIndex:              aws.Int64(0),
 			Groups:                   []*string{aws.String("sg-7aa2ab1f")},
-			SubnetId:                 aws.String("subnet-b0247cf9"),
+			SubnetId:                 aws.String("subnet-0f3dd4797753392c5"),
 		},
 	}
 
