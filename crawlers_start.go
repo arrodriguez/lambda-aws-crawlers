@@ -13,12 +13,14 @@ import (
 )
 
 type CrawlerStartEvent struct {
+	ProductId string `json:"product_id"`
 	CrawlerId string `json:"crawler_id"`
 	ImageName string `json:"image_name"`
 	ImageType string `json:"image_type"`
 }
 
 type CrawlerResponseEvent struct {
+	ProductId  string `json:"product_id"`
 	CrawlerId  string `json:"crawler_id"`
 	InstanceId string `json:"instance_id"`
 }
@@ -55,7 +57,7 @@ func CrawlersStart(event CrawlerStartEvent) (CrawlerResponseEvent, error) {
 
 	svc := ec2.New(session.New(config))
 
-	crawlers := CrawlersGet(event, svc)
+	_ = CrawlersGet(event, svc)
 
 	fmt.Println("#####################", "Paso el Crawlers Get")
 
@@ -99,7 +101,7 @@ func CrawlersStart(event CrawlerStartEvent) (CrawlerResponseEvent, error) {
 				Tags: []*ec2.Tag{
 					&ec2.Tag{
 						Key:   aws.String("Name"),
-						Value: aws.String(fmt.Sprintf("Crawler%sManaged%d", event.CrawlerId, crawlers)),
+						Value: aws.String(fmt.Sprintf("crawler-%s-%s-managed", event.ProductId, event.CrawlerId)),
 					},
 				},
 			},
@@ -116,6 +118,7 @@ func CrawlersStart(event CrawlerStartEvent) (CrawlerResponseEvent, error) {
 	log.Println("Created instance", *runResult.Instances[0].InstanceId)
 
 	return CrawlerResponseEvent{
+		ProductId:  event.ProductId,
 		CrawlerId:  event.CrawlerId,
 		InstanceId: *runResult.Instances[0].InstanceId,
 	}, nil
@@ -128,7 +131,7 @@ func CrawlersGet(event CrawlerStartEvent, svc *ec2.EC2) int {
 		Filters: []*ec2.Filter{
 			&ec2.Filter{
 				Name:   aws.String("tag:Name"),
-				Values: []*string{aws.String(fmt.Sprintf("Crawler%sManaged%s", event.CrawlerId, "*"))},
+				Values: []*string{aws.String(fmt.Sprintf("crawler-%s-%s-managed", event.ProductId, event.CrawlerId, "*"))},
 			},
 		},
 	})
